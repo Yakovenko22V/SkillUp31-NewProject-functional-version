@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import './styles-bar.scss';
 import './loadingStyle/loadingStyle.scss';
@@ -12,56 +12,61 @@ import Form from './ComponentsBTN/Form/Form';
 import { loadData } from './ComponentsBTN/Utils/loadData';
 
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      displayedList: '',
-      filteredArr: '',
-      arrTask: null
-    }
+const App = () => {
+  const [arrTask, setArrTask] = useState(null);
+  const [displayedList, setDisplayedList] = useState('');
+  const [filteredArr, setFilteredArr] = useState('');
+
+  const [isArrTaskLoaded, setIsArrTaskLoaded] = useState(false);
+
+  useEffect(() => {
+    loadData().then((data) => {
+      setArrTask(data)
+      setIsArrTaskLoaded(true)
+    })
+  }, [])
+
+  if (!isArrTaskLoaded) {
+    return <div className='loding-block'><div className="lds-circle"><div></div></div><div>Loading</div></div>
   }
 
-  deleteTask = id => {
-    this.setState(prevState => ({
-      arrTask: prevState.arrTask.filter((el) => el.idOfTask !== id)
-    })
-    )
+
+  const deleteTask = id => {
+    const copyArrTask = [...arrTask];
+    const deletElement = copyArrTask.filter((el) => el.idOfTask !== id);
+    setArrTask(deletElement);
   };
 
-  isTaskImportant = id => {
-    this.setState(prevState => ({
-      arrTask: prevState.arrTask.map((el) => el.idOfTask === id
-        ? { ...el, flagOfImportance: !el.flagOfImportance }
-        : el
-      )
-    }))
+  const isTaskImportant = id => {
+    const importanceOfEl = arrTask.map((el) => el.idOfTask === id
+      ? { ...el, flagOfImportance: !el.flagOfImportance }
+      : el)
+    setArrTask(importanceOfEl)
   };
 
-  isTasksActive = id => {
-    this.setState(prevState => ({
-      arrTask: prevState.arrTask.map((el) => el.idOfTask === id
-        ? { ...el, isTaskActive: !el.isTaskActive }
-        : el)
-    }))
+  const isTasksActive = id => {
+    const activityOfEl = arrTask.map((el) => el.idOfTask === id
+      ? { ...el, isTaskActive: !el.isTaskActive }
+      : el)
+    setArrTask(activityOfEl)
   };
 
-  arrTaskFilter = data => {
-    this.setState(prevState => ({
-      ...prevState,
+  const arrTaskFilter = data => {
+    const filterForAllTask = {
       displayedList: data
-    }))
+    }
+    setDisplayedList(filterForAllTask.displayedList)
   };
 
-  filteredByInput = data => {
-    this.setState(prevState => ({
-      ...prevState,
+  const filteredByInput = data => {
+    const filteredByInputText = {
       filteredArr: data
-    }))
+    }
+    setFilteredArr(filteredByInputText.filteredArr)
   };
 
-  setAdditionalTask = (data) => {
-    const arrWithNewTask = this.state.arrTask.concat();
+  const setAdditionalTask = (data) => {
+    const arrWithNewTask = [...arrTask];
     arrWithNewTask.push(
       {
         nameOfTask: data,
@@ -69,79 +74,60 @@ class App extends React.Component {
         flagOfImportance: false,
         isTaskActive: true
       });
-    this.setState({ arrTask: arrWithNewTask })
+    setArrTask(arrWithNewTask)
   };
 
-  componentDidMount() {
-    loadData().then((data) => {
-      this.setState({
-        arrTask:data
-      })
-    });
-  }
+  const newArray = arrTask.filter(item => {
+    if (displayedList === 'all') {
+      return item
+    } else if (displayedList === 'closed') {
+      return !item.isTaskActive
+    } else if (displayedList === 'allActive') {
+      return item.isTaskActive
+    } else {
+      return item
+    }
+  })
 
-  filterArrTask() {
-    const newArray = this.state.arrTask.filter(item => {
-      if (this.state.displayedList === 'all') {
-        return item
-      } else if (this.state.displayedList === 'closed') {
-        return !item.isTaskActive
-      } else if (this.state.displayedList === 'allActive') {
-        return item.isTaskActive
-      } else {
-        return item
-      }
-    })
-    return newArray
-  };
+  const newArrayTwo = newArray.filter(item => {
+    if (filteredArr === '') {
+      return item
+    } else {
+      return item.nameOfTask.toLowerCase().includes(filteredArr.toLowerCase())
+    }
+  });
 
-  filterNewArray() {
-    const newArrayTwo = this.filterArrTask().filter(item => {
-      if (this.state.filteredArr === '') {
-        return item
-      } else {
-        return item.nameOfTask.toLowerCase().includes(this.state.filteredArr.toLowerCase())
-      }
-    });
-   return newArrayTwo 
-  };
-
-  render() {
-
-    if(!this.state.arrTask) return <div className='loding-block'><div className="lds-circle"><div></div></div><div>Loading</div></div>
-
-    return (
-      <div className='parent-block'>
-        <div className='todo-list'><h1>TODO-List</h1></div>
-        <div className='wrapper'>
-          <div className='header-bar'>
-            <div className='search-block'>
-              <Input filteredByInput={this.filteredByInput} />
-              <div className='buttons-sort'>
-                <BtnAllTask arrTaskFilter={this.arrTaskFilter} activeBtn={this.state.displayedList} />
-                <BtnAllActiveTask arrTaskFilter={this.arrTaskFilter} activeBtn={this.state.displayedList} />
-                <BtnFinishedTask arrTaskFilter={this.arrTaskFilter} activeBtn={this.state.displayedList} />
-              </div>
-            </div>
-            <div className='add-task-block'>
-              <Form setAdditionalTask={this.setAdditionalTask} />
+  return (
+    <div className='parent-block'>
+      <div className='todo-list'><h1>TODO-List</h1></div>
+      <div className='wrapper'>
+        <div className='header-bar'>
+          <div className='search-block'>
+            <Input filteredByInput={filteredByInput} />
+            <div className='buttons-sort'>
+              <BtnAllTask arrTaskFilter={arrTaskFilter} activeBtn={displayedList} />
+              <BtnAllActiveTask arrTaskFilter={arrTaskFilter} activeBtn={displayedList} />
+              <BtnFinishedTask arrTaskFilter={arrTaskFilter} activeBtn={displayedList} />
             </div>
           </div>
-          <div className='task-container'>
-            {
-              this.filterNewArray().map((item) => (
-                <TaskList key={item.idOfTask}
-                  item={item}
-                  deleteTask={this.deleteTask}
-                  isTaskImportant={this.isTaskImportant}
-                  isTasksActive={this.isTasksActive} />
-              ))
-            }
+          <div className='add-task-block'>
+            <Form setAdditionalTask={setAdditionalTask} />
           </div>
         </div>
-        <div className='fonpicture'></div>
+        <div className='task-container'>
+          {
+            newArrayTwo.map((item) => (
+              <TaskList key={item.idOfTask}
+                item={item}
+                deleteTask={deleteTask}
+                isTaskImportant={isTaskImportant}
+                isTasksActive={isTasksActive} />
+            ))
+          }
+        </div>
       </div>
-    )
-  }
+      <div className='fonpicture'></div>
+    </div>
+  )
 }
 export default App;

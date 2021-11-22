@@ -1,15 +1,12 @@
 import React from "react";
 
 function TaskItem(props) {
-
-    const { itemT, title, itemN} = props
-
     return (
-        <div>{title} '
-            <span className={(itemT.length) ? 'span-task' : (itemT ? 'span-import green' : 'span-import black')} id={(itemN===false) ? 'non-active-style' : ''}>
+        <div>{props.title} '
+            <span className={(props.itemT.length) ? 'span-task' : (props.itemT ? 'span-import green' : 'span-import black')} id={(props.itemN===false) ? 'non-active-style' : ''}>
             {
-            (itemT.length) ?
-             itemT : (itemT ? 'Да' : 'Нет')
+            (props.itemT.length) ?
+            props.itemT : (props.itemT ? 'Да' : 'Нет')
             }
              </span>'
         </div>
