@@ -65,7 +65,7 @@ const App = () => {
     setFilteredArr(filteredByInputText.filteredArr)
   };
 
-  const setAdditionalTask = (data) => {
+  const setAdditionalTask = data => {
     const arrWithNewTask = [...arrTask];
     arrWithNewTask.push(
       {

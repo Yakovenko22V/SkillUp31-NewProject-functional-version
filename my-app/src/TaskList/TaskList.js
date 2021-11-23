@@ -4,7 +4,7 @@ import BtnImportance from "../ComponentsBTN/BtnImpotance/BtnImportance";
 import './TaskList.scss';
 import TaskItem from "./TaskItem/TaskItem";
 import BtnActive from "../ComponentsBTN/BtnActive/BtnActive";
-
+import PropTypes from 'prop-types';
 
 function TaskList(props) {
 
@@ -13,7 +13,7 @@ function TaskList(props) {
         isTaskImportant,
         isTasksActive
         } = props
-        
+
     return (
         <div>
             <ul className='listOfTask'>
@@ -29,5 +29,12 @@ function TaskList(props) {
         </div>
     )
 };
+
+TaskList.propTypes = {
+    item: PropTypes.object.isRequired,
+    deleteTask: PropTypes.func.isRequired,
+    isTaskImportant: PropTypes.func.isRequired,
+    isTasksActive: PropTypes.func.isRequired
+}
 
 export default TaskList;
