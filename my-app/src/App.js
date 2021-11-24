@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import './styles-bar.scss';
-import './loadingStyle/loadingStyle.scss';
-import BtnAllActiveTask from './ComponentsBTN/BtnAllActiveTask/BtnAllActiveTask';
-import BtnAllTask from './ComponentsBTN/BtnAllTask/BtnAllTask';
-import BtnFinishedTask from './ComponentsBTN/BtnFinishedTask/BtnFinishedTask';
-import Input from './ComponentsBTN/Input/Input';
 import './TaskList/TaskList'
 import TaskList from './TaskList/TaskList';
-import Form from './ComponentsBTN/Form/Form';
-import { loadData } from './ComponentsBTN/Utils/loadData';
+import { loadData } from './Utils/loadData';
+import PreLoadingPage from './Components/PreLoadingPage/PreLoadingPage';
+import { filterForArray } from './filterForArray/filterForArray';
+import HeaderBar from './Components/HeaderBar/HeaderBar';
 
 
 const App = () => {
@@ -27,9 +24,8 @@ const App = () => {
   }, [])
 
   if (!isArrTaskLoaded) {
-    return <div className='loding-block'><div className="lds-circle"><div></div></div><div>Loading</div></div>
+    return <PreLoadingPage />
   }
-
 
   const deleteTask = id => {
     const copyArrTask = [...arrTask];
@@ -77,46 +73,19 @@ const App = () => {
     setArrTask(arrWithNewTask)
   };
 
-  const newArray = arrTask.filter(item => {
-    if (displayedList === 'all') {
-      return item
-    } else if (displayedList === 'closed') {
-      return !item.isTaskActive
-    } else if (displayedList === 'allActive') {
-      return item.isTaskActive
-    } else {
-      return item
-    }
-  })
-
-  const newArrayTwo = newArray.filter(item => {
-    if (filteredArr === '') {
-      return item
-    } else {
-      return item.nameOfTask.toLowerCase().includes(filteredArr.toLowerCase())
-    }
-  });
-
   return (
     <div className='parent-block'>
       <div className='todo-list'><h1>TODO-List</h1></div>
       <div className='wrapper'>
-        <div className='header-bar'>
-          <div className='search-block'>
-            <Input filteredByInput={filteredByInput} />
-            <div className='buttons-sort'>
-              <BtnAllTask arrTaskFilter={arrTaskFilter} activeBtn={displayedList} />
-              <BtnAllActiveTask arrTaskFilter={arrTaskFilter} activeBtn={displayedList} />
-              <BtnFinishedTask arrTaskFilter={arrTaskFilter} activeBtn={displayedList} />
-            </div>
-          </div>
-          <div className='add-task-block'>
-            <Form setAdditionalTask={setAdditionalTask} />
-          </div>
-        </div>
+        <HeaderBar
+          filteredByInput={filteredByInput}
+          arrTaskFilter={arrTaskFilter}
+          displayedList={displayedList}
+          setAdditionalTask={setAdditionalTask}
+        />
         <div className='task-container'>
           {
-            newArrayTwo.map((item) => (
+            filterForArray({ array: arrTask, condition1: displayedList, condition2: filteredArr }).map((item) => (
               <TaskList key={item.idOfTask}
                 item={item}
                 deleteTask={deleteTask}
@@ -130,4 +99,5 @@ const App = () => {
     </div>
   )
 }
+
 export default App;
