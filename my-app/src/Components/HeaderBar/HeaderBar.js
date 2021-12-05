@@ -6,22 +6,20 @@ import BtnFinishedTask from '../../ComponentsBTN/BtnFinishedTask/BtnFinishedTask
 import Form from '../Form/Form'
 import InputForSearch from '../InputForSearch/InputForSearch'
 
-function HeaderBar(props) {
+function HeaderBar() {
     
-    const{filteredByInput, arrTaskFilter, displayedList,setAdditionalTask} = props
-
     return (
         <div className='header-bar'>
             <div className='search-block'>
-                <InputForSearch filteredByInput={filteredByInput} />
+                <InputForSearch/>
                 <div className='buttons-sort'>
-                    <BtnAllTask arrTaskFilter={arrTaskFilter} activeBtn={displayedList} />
-                    <BtnAllActiveTask arrTaskFilter={arrTaskFilter} activeBtn={displayedList} />
-                    <BtnFinishedTask arrTaskFilter={arrTaskFilter} activeBtn={displayedList} />
+                    <BtnAllTask/>
+                    <BtnAllActiveTask />
+                    <BtnFinishedTask />
                 </div>
             </div>
             <div className='add-task-block'>
-                <Form setAdditionalTask={setAdditionalTask} />
+                <Form />
             </div>
         </div>
     )

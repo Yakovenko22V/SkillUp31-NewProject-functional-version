@@ -1,8 +1,9 @@
-import React, { useState } from "react"
-import PropTypes from 'prop-types';
+import React, { useContext, useState } from 'react';
+import { AppContext } from '../../functions/createContext/createContext';
 
-const Form = ({ setAdditionalTask }) => {
+const Form = () => {
     const [inputTextForAdd, setInputTextForAdd] = useState('');
+    const {setAdditionalTask} = useContext(AppContext);
 
     const getAdditionalText = (data) => {
         const additionalTask = {
@@ -24,7 +25,4 @@ const Form = ({ setAdditionalTask }) => {
     )
 }
 
-Form.propTypes = {
-    setAdditionalTask: PropTypes.func.isRequired
-}
 export default Form;

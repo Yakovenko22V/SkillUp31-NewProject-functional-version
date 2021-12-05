@@ -1,7 +1,8 @@
-import React from "react";
-import PropTypes from 'prop-types';
+import React, { useContext } from "react";
+import { AppContext } from "../../functions/createContext/createContext";
 
-function BtnAllTask({ arrTaskFilter, activeBtn }) {
+function BtnAllTask() {
+    const {arrTaskFilter, activeBtn} = useContext(AppContext);
 
     let newClassName = 'btn-style'
     if (activeBtn === 'all') {
@@ -10,11 +11,6 @@ function BtnAllTask({ arrTaskFilter, activeBtn }) {
     return (
         <button className={newClassName} onClick={() => arrTaskFilter('all')}>Все задачи</button>
     )
-}
-
-BtnAllTask.propTypes = {
-    arrTaskFilter: PropTypes.func.isRequired,
-    activeBtn: PropTypes.string.isRequired
 }
 
 export default BtnAllTask;

@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from 'prop-types';
+import { AppContext } from "../../functions/createContext/createContext";
 
 function BtnDelete(props) {
-    const { deleteTask, id } = props
+    const {id} = props
+    const {deleteTask} = useContext(AppContext);
     return (
         <button className='btn-style' onClick={() => deleteTask(id)}>Удалить задачу</button>
     )
 };
 
 BtnDelete.propTypes = {
-    deleteTask: PropTypes.func.isRequired,
     id: PropTypes.number.isRequired
 }
 

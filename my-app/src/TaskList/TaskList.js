@@ -6,13 +6,7 @@ import TaskItem from "./TaskItem/TaskItem";
 import BtnActive from "../ComponentsBTN/BtnActive/BtnActive";
 import PropTypes from 'prop-types';
 
-function TaskList(props) {
-
-    const {item, 
-        deleteTask,
-        isTaskImportant,
-        isTasksActive
-        } = props
+function TaskList({item}) {
 
     return (
         <div>
@@ -21,9 +15,9 @@ function TaskList(props) {
                 <TaskItem itemT={item.nameOfTask} title='Задача:'/>
                 <TaskItem itemT={item.flagOfImportance} itemN={item.isTaskActive} title='Важна ли задача:'/>
                 </div>
-                <BtnDelete deleteTask={deleteTask} id={item.idOfTask}/>
-                <BtnImportance isTaskImportant={isTaskImportant} id={item.idOfTask}/>
-                <BtnActive isTasksActive={isTasksActive} item={item} id={item.idOfTask}/>
+                <BtnDelete id={item.idOfTask}/>
+                <BtnImportance id={item.idOfTask}/>
+                <BtnActive item={item} id={item.idOfTask}/>
                 <hr className='hrLine' />
             </ul>
         </div>
@@ -32,9 +26,6 @@ function TaskList(props) {
 
 TaskList.propTypes = {
     item: PropTypes.object.isRequired,
-    deleteTask: PropTypes.func.isRequired,
-    isTaskImportant: PropTypes.func.isRequired,
-    isTasksActive: PropTypes.func.isRequired
 }
 
 export default TaskList;

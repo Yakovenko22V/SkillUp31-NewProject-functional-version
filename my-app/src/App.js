@@ -5,8 +5,9 @@ import './TaskList/TaskList'
 import TaskList from './TaskList/TaskList';
 import { loadData } from './Utils/loadData';
 import PreLoadingPage from './Components/PreLoadingPage/PreLoadingPage';
-import { filterForArray } from './filterForArray/filterForArray';
+import { filterForArray } from './functions/filterForArray/filterForArray';
 import HeaderBar from './Components/HeaderBar/HeaderBar';
+import { AppContext } from './functions/createContext/createContext';
 
 
 const App = () => {
@@ -77,20 +78,25 @@ const App = () => {
     <div className='parent-block'>
       <div className='todo-list'><h1>TODO-List</h1></div>
       <div className='wrapper'>
-        <HeaderBar
-          filteredByInput={filteredByInput}
-          arrTaskFilter={arrTaskFilter}
-          displayedList={displayedList}
-          setAdditionalTask={setAdditionalTask}
-        />
+        <AppContext.Provider value={{
+          filteredByInput: filteredByInput,
+          arrTaskFilter: arrTaskFilter,
+          activeBtn: displayedList,
+          setAdditionalTask: setAdditionalTask
+        }}>
+          <HeaderBar />
+        </AppContext.Provider>
         <div className='task-container'>
           {
             filterForArray({ array: arrTask, condition1: displayedList, condition2: filteredArr }).map((item) => (
-              <TaskList key={item.idOfTask}
-                item={item}
-                deleteTask={deleteTask}
-                isTaskImportant={isTaskImportant}
-                isTasksActive={isTasksActive} />
+              <AppContext.Provider key={item.idOfTask} value={{
+                deleteTask: deleteTask,
+                isTaskImportant: isTaskImportant,
+                isTasksActive: isTasksActive
+              }}>
+                <TaskList
+                  item={item} />
+              </AppContext.Provider>
             ))
           }
         </div>
